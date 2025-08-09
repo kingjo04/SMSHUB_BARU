@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>History Order</title>
+<style>
+    body { font-family: Arial, sans-serif; background: #0f1724; color: white; padding: 20px; }
+    a { color: #06b6d4; text-decoration: none; font-weight: bold; }
+    table { width: 100%; border-collapse: collapse; background: #0b1220; margin-top:15px; }
+    th, td { padding: 10px; border: 1px solid #222; }
+    th { background: #06b6d4; color: black; }
+    tr:nth-child(even) { background: rgba(255,255,255,0.03); }
+    .sms { white-space: pre-wrap; color: #94a3b8; }
+</style>
+</head>
+<body>
+<h1>📜 History Order</h1>
+<p><a href="/">⬅ Kembali</a></p>
+<table>
+    <thead>
+        <tr>
+            <th>Order ID</th>
+            <th>Service</th>
+            <th>Country</th>
+            <th>Nomor</th>
+            <th>Status</th>
+            <th>SMS</th>
+            <th>Waktu</th>
+        </tr>
+    </thead>
+    <tbody id="historyTable"></tbody>
+</table>
+
+<script>
+async function loadHistory(){
+    const res = await fetch('/api/history');
+    const j = await res.json();
+    if(j.success){
+        const table = document.getElementById('historyTable');
+        table.innerHTML = '';
+        j.orders.forEach(o => {
+            table.innerHTML += `
+                <tr>
+                    <td>#${o.id}</td>
+                    <td>${o.service_name}</td>
+                    <td>${o.country_name}</td>
+                    <td>${o.number}</td>
+                    <td>${o.status}</td>
+
+                    <td class="sms">${o.sms || '-'}</td>
+                    <td>${o.created_at}</td>
+                </tr>
+            `;
+        });
+    }
+}
+loadHistory();
+</script>
+</body>
+</html>

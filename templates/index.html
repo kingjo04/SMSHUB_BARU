@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>SMSHub Real-Timed</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0f1724;
+            --card: #0b1220;
+            --muted: #94a3b8;
+            --accent: #06b6d4;
+            --success: #16a34a;
+            --danger: #ef4444;
+            --glass: rgba(255,255,255,0.03);
+            --dropdown-bg: #1f2937;
+            --dropdown-color: #e6eef7;
+        }
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: 'Roboto', sans-serif;
+            background: linear-gradient(180deg, #071025 0%, #07183a 100%);
+            color: #e6eef7;
+        }
+        .container {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            width: 100%;
+        }
+        h1 {
+            font-size: 28px;
+            margin: 0;
+            flex: 1;
+            text-align: left;
+        }
+        .balance {
+            background: var(--glass);
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: var(--muted);
+            font-weight: 600;
+        }
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+            align-items: center;
+        }
+        select {
+            background: var(--dropdown-bg);
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: var(--dropdown-color);
+        }
+        button.primary {
+            background: linear-gradient(90deg, var(--accent), #3b82f6);
+            border: none;
+            padding: 10px 14px;
+            border-radius: 10px;
+            color: #062021;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        button.ghost {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.06);
+            padding: 8px 12px;
+            border-radius: 10px;
+            color: var(--muted);
+            cursor: pointer;
+        }
+        .order-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
+            gap: 12px;
+        }
+        .order-card {
+            background: var(--card);
+            padding: 14px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        .order-id {
+            font-weight: 700;
+        }
+        .order-number {
+            font-family: monospace;
+            background: rgba(255,255,255,0.02);
+            padding: 6px 8px;
+            border-radius: 8px;
+        }
+        .status {
+            font-weight: 700;
+        }
+        .sms-box {
+            background: rgba(255,255,255,0.02);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 8px;
+            white-space: pre-wrap;
+            color: var(--muted);
+        }
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+            flex-wrap: wrap;
+        }
+        .btn-small {
+            padding: 8px 10px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+        }
+        .btn-cancel {
+            background: transparent;
+            border: 1px solid rgba(255,255,255,0.06);
+            color: var(--muted);
+        }
+        .btn-delete {
+            background: var(--danger);
+            color: white;
+        }
+        .btn-request {
+            background: var(--success);
+            color: white;
+        }
+        .notification {
+            position: fixed;
+            right: 18px;
+            bottom: 18px;
+            padding: 12px 16px;
+            border-radius: 10px;
+            background: rgba(0,0,0,0.6);
+            color: #fff;
+            display: none;
+        }
+        @media (max-width: 520px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            .controls {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+    <h1>🔥 SMSHub Real-Timed</h1>
+    <div style="display:flex;gap:10px;align-items:center;">
+        <div class="balance">Saldo: <span id="balance">Loading...</span></div>
+        <a href="/history" style="background:var(--accent);padding:8px 12px;border-radius:8px;color:black;font-weight:bold;text-decoration:none;">📜 History</a>
+    </div>
+</header>
+
+
+        <div class="controls">
+            <select id="serviceSelect" aria-label="Pilih layanan">
+                <option value="">Pilih Layanan</option>
+                <option value="go">Google</option>
+                <option value="ni">Gojek</option>
+                <option value="wa">WhatsApp</option>
+                <option value="bnu">Qpon</option>
+                <option value="tg">Telegram</option>
+                <option value="eh">Telegram 2.0</option>
+                <option value="ot">Any Other</option>
+            </select>
+
+            <select id="countrySelect" aria-label="Pilih negara">
+                <option value="">Pilih Negara</option>
+                <option value="6">Indonesia</option>
+                <option value="0">Russia</option>
+                <option value="3">China</option>
+                <option value="4">Philippines</option>
+                <option value="10">Vietnam</option>
+            </select>
+
+            <button class="primary" id="createBtn" onclick="createOrder()">🚀 Buat Order Baru</button>
+            <button class="ghost" onclick="refreshOrderStatusOnly()">🔁 Refresh</button>
+
+        </div>
+
+        <div id="orderList" class="order-list"></div>
+    </div>
+    <div id="notification" class="notification"></div>
+
+<script>
+    let activeTrackers = {};
+
+    function showNotification(msg, timeout=3000){
+        const n = document.getElementById('notification');
+        n.textContent = msg;
+        n.style.display = 'block';
+        setTimeout(()=> n.style.display = 'none', timeout);
+    }
+
+    async function loadBalance(){
+        try{
+            const res = await fetch('/api/balance');
+            const j = await res.json();
+            document.getElementById('balance').textContent = j.success ? j.balance : 'Error';
+        }catch(e){
+            document.getElementById('balance').textContent = 'Error';
+        }
+    }
+
+async function loadOrders(){
+    try{
+        // Stop semua tracker aktif biar nggak numpuk
+        for (let id in activeTrackers) {
+            clearInterval(activeTrackers[id]);
+        }
+        activeTrackers = {};
+
+        document.getElementById('orderList').innerHTML = '';
+
+        const res = await fetch('/api/orders');
+        const j = await res.json();
+        if(j.success){
+            j.orders.forEach(o => addOrderCard(o));
+        }
+    }catch(e){
+        console.error(e);
+    }
+}
+
+
+    async function createOrder(){
+        const service = document.getElementById('serviceSelect').value;
+        const country = document.getElementById('countrySelect').value;
+        if(!service || !country){ showNotification('Pilih layanan dan negara dulu!'); return; }
+
+        const btn = document.getElementById('createBtn');
+        btn.disabled = true; btn.textContent = '⏳ Memproses...';
+
+        try{
+            const res = await fetch('/api/create', {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({service,country})
+            });
+            const j = await res.json();
+            if(j.success){
+                addOrderCard(j.order);
+                startStatusTracker(j.order.id);
+                startCountdown(j.order.id, j.order.created_at);
+                showNotification(`✅ Order #${j.order.id} dibuat!`);
+                loadBalance();
+            } else {
+                showNotification('❌ '+(j.error || 'Gagal membuat order'));
+            }
+        }catch(e){
+            showNotification('⚠️ Koneksi error!');
+        }finally{
+            btn.disabled = false; btn.textContent = '🚀 Buat Order Baru';
+        }
+    }
+
+ function addOrderCard(order){
+    const countryCode = getCountryCode(order.country);
+    const card = document.createElement('div');
+    card.className = 'order-card';
+    card.id = `order-${order.id}`;
+    card.innerHTML = `
+    <div class="order-header">
+        <div>
+            <div class="order-id">#${order.id}</div>
+            <div class="service-name">${order.service_name || order.service}</div>
+            <div class="country-name" style="color: var(--muted); font-size: 0.9em;">${order.country_name || order.country}</div>
+        </div>
+        <div class="order-number">${order.number}</div>
+    </div>
+        <div>
+            <div>Status: <span class="status">${order.status}</span></div>
+            <div>Waktu tersisa: <span class="countdown" id="countdown-${order.id}">20:00</span></div>
+            <div class="sms-box" id="sms-${order.id}">${order.status==='COMPLETED' && order.sms ? order.sms : ''}</div>
+            <div class="action-buttons">
+                <button class="btn-small btn-cancel" onclick="copyNumber('${order.number}', true, '${countryCode}')">Salin ${countryCode}</button>
+                <button class="btn-small btn-cancel" onclick="copyNumber('${order.number}', false, '${countryCode}')">Salin tanpa ${countryCode}</button>
+                <button class="btn-small btn-cancel" onclick="copyNumberWithFullPrefix('${order.number}', '${countryCode}')">Salin +${countryCode}</button>
+            </div>
+            <div class="action-buttons" style="margin-top:8px;">
+    <button class="btn-small btn-request" onclick="requestAgain('${order.id}')">🔄 Minta Ulang</button>
+    <button class="btn-small btn-cancel" style="background: var(--danger); color: white;" onclick="cancelOrder('${order.id}')">🛑 Cancel</button>
+    <button class="btn-small btn-delete" onclick="deleteOrder('${order.id}')">🗑️ Delete</button>
+</div>
+
+        </div>
+    `;
+    // Tambahkan kartu order baru di bagian akhir daftar, bukan di depan
+    document.getElementById('orderList').appendChild(card);
+    if(order.status === 'WAITING') {
+        startStatusTracker(order.id);
+        startCountdown(order.id, order.created_at);
+    }
+}
+
+    function getCountryCode(country){
+        if(country === '6') return '62';
+        if(country === '0') return '7';
+        if(country === '3') return '86';
+        if(country === '4') return '63';
+        if(country === '10') return '84';
+        return '';
+    }
+
+    function copyNumber(number, withPrefix, countryCode){
+        let txt = number;
+        if(!withPrefix) txt = number.replace(new RegExp(`^${countryCode}`),'');
+        navigator.clipboard.writeText(txt);
+        showNotification('Nomor disalin ke clipboard');
+    }
+
+    function copyNumberWithFullPrefix(number, countryCode){
+        let n = number;
+        if(!n.startsWith('+')) n = `+${countryCode}${n.replace(new RegExp(`^${countryCode}`), '')}`;
+        navigator.clipboard.writeText(n);
+        showNotification('Nomor lengkap disalin ke clipboard');
+    }
+
+    async function cancelOrder(orderId){
+        try{
+            const res = await fetch(`/api/cancel/${orderId}`, {method:'POST'});
+            const j = await res.json();
+            if(j.success){
+                deleteFromUI(orderId);
+                showNotification('✅ Order dibatalkan');
+            } else showNotification('❌ Gagal cancel order');
+        }catch(e){
+            showNotification('⚠️ Koneksi error!');
+        }
+    }
+
+async function requestAgain(orderId){
+    try{
+        const res = await fetch(`/api/request_again/${orderId}`, {method:'POST'});
+        const j = await res.json();
+        if(j.success){
+            showNotification('✅ Permintaan ulang dikirim');
+            loadOrders(); // langsung refresh list order
+        } else {
+            showNotification('❌ Gagal minta ulang: ' + (j.error || ''));
+        }
+    }catch(e){
+        showNotification('⚠️ Koneksi error!');
+    }
+}
+
+
+
+
+async function refreshOrderStatusOnly(){
+    try{
+        const res = await fetch('/api/orders');
+        const j = await res.json();
+        if(j.success){
+            j.orders.forEach(o => {
+                const card = document.getElementById(`order-${o.id}`);
+                if(card){
+                    card.querySelector('.status').textContent = o.status;
+                    if(o.status === 'COMPLETED' && o.sms){
+                        document.getElementById(`sms-${o.id}`).textContent = o.sms;
+                    }
+                } else {
+                    // Order baru yang belum ada di UI → tambahkan
+                    addOrderCard(o);
+                }
+            });
+        }
+    }catch(e){
+        console.error(e);
+    }
+}
+
+async function finishOrder(orderId){
+    try{
+        const res = await fetch(`/api/finish/${orderId}`, {method:'POST'});
+        const j = await res.json();
+        if(j.success){
+            showNotification('✅ Order diselesaikan');
+            loadOrders();
+        } else {
+            showNotification('❌ Gagal menyelesaikan order');
+        }
+    }catch(e){
+        showNotification('⚠️ Koneksi error!');
+    }
+}
+
+    async function deleteOrder(orderId){
+        try{
+            const res = await fetch(`/api/remove_order/${orderId}`, {method:'POST'});
+            const j = await res.json();
+            if(j.success){
+                deleteFromUI(orderId);
+                showNotification('✅ Order dihapus');
+            } else showNotification('❌ Gagal hapus order');
+        }catch(e){
+            showNotification('⚠️ Koneksi error!');
+        }
+    }
+
+    function deleteFromUI(orderId){
+        const el = document.getElementById(`order-${orderId}`);
+        if(el) el.remove();
+        clearInterval(activeTrackers[orderId]);
+        delete activeTrackers[orderId];
+    }
+
+    function startStatusTracker(orderId){
+    if(activeTrackers[orderId]) return;
+    activeTrackers[orderId] = setInterval(async ()=>{
+        try{
+            const res = await fetch(`/api/status/${orderId}`);
+            const j = await res.json();
+            const card = document.getElementById(`order-${orderId}`);
+            if(!card){ clearInterval(activeTrackers[orderId]); delete activeTrackers[orderId]; return; }
+            const statusEl = card.querySelector('.status');
+            const smsBox = document.getElementById(`sms-${orderId}`);
+
+            // simpan raw status untuk kondisi tombol
+            card.dataset.rawStatus = j.status;
+
+            if(j.status === 'COMPLETED'){
+                statusEl.textContent = '✅ SMS Diterima';
+                if(j.sms && smsBox) smsBox.textContent = j.sms;
+                clearInterval(activeTrackers[orderId]);
+                delete activeTrackers[orderId];
+            } else {
+                statusEl.textContent = j.status;
+            }
+
+            // update tombol minta ulang sesuai kondisi
+            updateRequestButton(card, orderId);
+
+        }catch(e){
+            console.error(e);
+        }
+    }, 2500);
+}
+
+
+
+
+    function startCountdown(orderId, createdAt) {
+    const countdownEl = document.getElementById(`countdown-${orderId}`);
+    if (!countdownEl) return;
+
+    const createdTime = new Date(createdAt).getTime();
+    const endTime = createdTime + (20 * 60 * 1000); // 20 menit
+
+    const timer = setInterval(() => {
+        const now = Date.now();
+        const diff = endTime - now;
+
+        if (diff <= 0) {
+            countdownEl.textContent = "00:00";
+            clearInterval(timer);
+
+            // Panggil API timeout untuk pindahkan ke history
+            fetch(`/api/timeout/${orderId}`, { method: 'POST' })
+                .then(() => loadOrders())
+                .catch(err => console.error("Gagal set timeout:", err));
+
+            return;
+        }
+
+        const minutes = Math.floor(diff / (1000 * 60));
+        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+        countdownEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+    }, 1000);
+}
+
+
+    // Init
+    loadBalance();
+    // Load country list dynamically from API or use fallback
+    loadCountries();
+    loadOrders();
+    // Refresh balance periodically
+    setInterval(loadBalance, 30000);
+
+// Fungsi untuk memuat daftar negara dari API atau fallback manual
+async function loadCountries(){
+    const select = document.getElementById('countrySelect');
+    // Bersihkan opsi yang ada dan tambahkan opsi default
+    select.innerHTML = '<option value="">Pilih Negara</option>';
+    try {
+        const res = await fetch('/api/countries');
+        const countries = await res.json();
+        // API /api/countries mengembalikan objek/dictionary negara
+        if (countries && typeof countries === 'object') {
+            Object.keys(countries).forEach(key => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = countries[key];
+                select.appendChild(opt);
+            });
+            return;
+        }
+    } catch(e){
+        console.error('Gagal memuat daftar negara dari API:', e);
+    }
+    // Jika API tidak tersedia atau gagal, gunakan daftar manual sebagai fallback
+    const manualCountries = {
+        '6': 'Indonesia',
+        '0': 'Russia',
+        '3': 'China',
+        '4': 'Philippines',
+        '10': 'Vietnam'
+    };
+    Object.keys(manualCountries).forEach(key => {
+        const opt = document.createElement('option');
+        opt.value = key;
+        opt.textContent = manualCountries[key];
+        select.appendChild(opt);
+    });
+}
+</script>
+</body>
+</html>
