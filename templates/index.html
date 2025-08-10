@@ -7,430 +7,501 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #0f1724;
-            --card: #0b1220;
-            --muted: #94a3b8;
-            --accent: #06b6d4;
-            --success: #16a34a;
-            --danger: #ef4444;
-            --glass: rgba(255,255,255,0.03);
-            --dropdown-bg: #1f2937;
-            --dropdown-color: #e6eef7;
+            --bg:#0f1724; --card:#0b1220; --muted:#94a3b8; --accent:#06b6d4;
+            --success:#16a34a; --danger:#ef4444; --info:#3b82f6; --glass:rgba(255,255,255,0.03);
+            --outline:rgba(255,255,255,0.06); --txt:#e6eef7;
         }
-        html, body {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(180deg, #071025 0%, #07183a 100%);
-            color: #e6eef7;
-        }
-        .container {
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 18px;
-            width: 100%;
-        }
-        h1 {
-            font-size: 28px;
-            margin: 0;
-            flex: 1;
-            text-align: left;
-        }
-        .balance {
-            background: var(--glass);
-            padding: 10px 14px;
-            border-radius: 10px;
-            color: var(--muted);
-            font-weight: 600;
-        }
-        .controls {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 18px;
-            align-items: center;
-        }
-        select {
-            background: var(--dropdown-bg);
-            border: 1px solid rgba(255,255,255,0.06);
-            padding: 10px 12px;
-            border-radius: 8px;
-            color: var(--dropdown-color);
-        }
-        button.primary {
-            background: linear-gradient(90deg, var(--accent), #3b82f6);
-            border: none;
-            padding: 10px 14px;
-            border-radius: 10px;
-            color: #062021;
-            font-weight: 700;
-            cursor: pointer;
-        }
-        button.ghost {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.06);
-            padding: 8px 12px;
-            border-radius: 10px;
-            color: var(--muted);
-            cursor: pointer;
-        }
-        .order-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px,1fr));
-            gap: 12px;
-        }
-        .order-card {
-            background: var(--card);
-            padding: 14px;
-            border-radius: 12px;
-            border: 1px solid rgba(255,255,255,0.03);
-        }
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        .order-id {
-            font-weight: 700;
-        }
-        .order-number {
-            font-family: monospace;
-            background: rgba(255,255,255,0.02);
-            padding: 6px 8px;
-            border-radius: 8px;
-        }
-        .status {
-            font-weight: 700;
-        }
-        .sms-box {
-            background: rgba(255,255,255,0.02);
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 8px;
-            white-space: pre-wrap;
-            color: var(--muted);
-        }
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-            flex-wrap: wrap;
-        }
-        .btn-small {
-            padding: 8px 10px;
-            border-radius: 8px;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .btn-cancel {
-            background: transparent;
-            border: 1px solid rgba(255,255,255,0.06);
-            color: var(--muted);
-        }
-        .btn-delete {
-            background: var(--danger);
-            color: white;
-        }
-        .btn-request {
-            background: var(--success);
-            color: white;
-        }
-        .notification {
-            position: fixed;
-            right: 18px;
-            bottom: 18px;
-            padding: 12px 16px;
-            border-radius: 10px;
-            background: rgba(0,0,0,0.6);
-            color: #fff;
-            display: none;
-        }
-        @media (max-width: 520px) {
-            header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
-            .controls {
-                width: 100%;
-            }
-        }
+        html, body { margin:0; padding:0; height:100%; font-family:'Roboto',sans-serif;
+            background:linear-gradient(180deg,#071025 0%,#07183a 100%); color:var(--txt); }
+        .container { max-width: 1120px; margin: 0 auto; padding: 20px; }
+        header { display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; }
+        h1 { font-size:28px; margin:0; }
+        .balance { background:var(--glass); padding:10px 14px; border-radius:10px; color:var(--muted); font-weight:700; }
+        .head-actions { display:flex; gap:10px; align-items:center; }
+        .controls { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap:10px; margin-bottom:14px; align-items:center; }
+        select, input[type="search"] { background:#1f2937; border:1px solid var(--outline); padding:10px 12px; border-radius:10px; color:var(--txt); }
+        button.primary { background:linear-gradient(90deg, var(--accent), #3b82f6); border:none; padding:10px 14px; border-radius:10px; color:#062021; font-weight:700; cursor:pointer; }
+        button.ghost { background:transparent; border:1px solid var(--outline); padding:10px 12px; border-radius:10px; color:var(--txt); cursor:pointer; }
+
+        .order-list { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:12px; }
+        .order-card { background:var(--card); padding:14px; border-radius:14px; border:1px solid var(--outline); }
+        .order-header { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px; }
+        .order-id { font-weight:700; }
+        .service-name { font-weight:700; }
+        .country-name { color:var(--muted); font-size:0.9em; }
+        .status-badge { display:inline-block; padding:4px 8px; border-radius:999px; font-weight:800; font-size:12px; border:1px solid var(--outline); }
+        .b-wait { background:rgba(59,130,246,.15); color:#bfdbfe; }
+        .b-done { background:rgba(22,163,74,.15); color:#86efac; }
+
+        .order-number { font-family:monospace; background:rgba(255,255,255,0.03); padding:6px 8px; border-radius:8px; display:inline-block; }
+        .cc-copy-icon { margin-left:6px; padding:6px 8px; border-radius:8px; border:1px solid var(--outline); background:transparent; color:var(--txt); cursor:pointer; }
+        .sms-wrap { position:relative; }
+        .sms-box { background:rgba(255,255,255,0.02); padding:10px 36px 10px 10px; border-radius:8px; margin-top:8px; white-space:pre-wrap; color:#a8b3c6; min-height:20px; }
+        .sms-copy { position:absolute; right:8px; top:8px; display:none; background:transparent; border:1px solid var(--outline);
+            border-radius:8px; padding:6px 8px; cursor:pointer; color:var(--txt); }
+        .action-buttons { display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+        .btn-small { padding:8px 10px; border-radius:10px; border:1px solid var(--outline); cursor:pointer; font-weight:700; background:transparent; color:var(--txt); }
+        .btn-delete { background:var(--danger); color:#fff; border-color:transparent; }
+        .btn-ok { background:var(--success); color:#fff; border-color:transparent; }
+        .muted { color:var(--muted); font-size:12px; }
+        .bar-row { display:flex; gap:10px; align-items:center; }
+        @media (max-width:520px){ .controls{grid-template-columns: 1fr 1fr} }
+        .notification { position: fixed; right: 18px; bottom: 18px; padding: 12px 16px; border-radius: 10px; background: rgba(0,0,0,0.6); color: #fff; display: none; }
+
+        /* ---------- Modal Deposit ---------- */
+        .modal-backdrop { position:fixed; inset:0; background:rgba(0,0,0,.6); display:none; align-items:center; justify-content:center; z-index:1000; }
+        .modal { width:min(560px, 92vw); background:linear-gradient(180deg,#0e1628 0%, #0b1220 100%); border:1px solid var(--outline); border-radius:16px; padding:18px; box-shadow:0 20px 60px rgba(0,0,0,.5); }
+        .modal-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; }
+        .modal-title { font-size:18px; font-weight:800; }
+        .modal-close { background:transparent; border:1px solid var(--outline); color:var(--txt); border-radius:10px; padding:6px 10px; cursor:pointer; }
+        .badge { display:inline-block; padding:4px 8px; border-radius:999px; font-weight:800; font-size:12px; border:1px solid var(--outline); margin-right:6px; }
+        .grid2 { display:grid; grid-template-columns: 1fr; gap:10px; }
+        .address-row { display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; }
+        .address { font-family:monospace; background:rgba(255,255,255,.04); padding:10px; border-radius:10px; word-break:break-all; }
+        .copy-btn { border:1px solid var(--outline); background:transparent; color:var(--txt); padding:10px 12px; border-radius:10px; cursor:pointer; font-weight:700; }
+        .qr { display:none; justify-content:center; align-items:center; margin-top:6px; }
+        .hint { color:#c7d2fe; font-size:13px; }
+        .warn { color:#fca5a5; font-size:13px; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-    <h1>🔥 SMSHub Real-Timed</h1>
-    <div style="display:flex;gap:10px;align-items:center;">
-        <div class="balance">Saldo: <span id="balance">Loading...</span></div>
-        <a href="/history" style="background:var(--accent);padding:8px 12px;border-radius:8px;color:black;font-weight:bold;text-decoration:none;">📜 History</a>
-    </div>
-</header>
-
-
-        <div class="controls">
-            <select id="serviceSelect" aria-label="Pilih layanan">
-                <option value="">Pilih Layanan</option>
-                <option value="go">Google</option>
-                <option value="ni">Gojek</option>
-                <option value="wa">WhatsApp</option>
-                <option value="bnu">Qpon</option>
-                <option value="tg">Telegram</option>
-                <option value="eh">Telegram 2.0</option>
-                <option value="ot">Any Other</option>
-            </select>
-
-            <select id="countrySelect" aria-label="Pilih negara">
-                <option value="">Pilih Negara</option>
-                <option value="6">Indonesia</option>
-                <option value="0">Russia</option>
-                <option value="3">China</option>
-                <option value="4">Philippines</option>
-                <option value="10">Vietnam</option>
-            </select>
-
-            <button class="primary" id="createBtn" onclick="createOrder()">🚀 Buat Order Baru</button>
-            <button class="ghost" onclick="refreshOrderStatusOnly()">🔁 Refresh</button>
-
+<div class="container">
+    <header>
+        <h1>🔥 SMSHub Real-Timed</h1>
+        <div class="head-actions">
+            <div class="balance">Saldo: <span id="balance">Loading...</span></div>
+            <button class="ghost" onclick="openDeposit()">💳 Deposit</button>
+            <a href="/history" style="background:var(--accent);padding:8px 12px;border-radius:10px;color:black;font-weight:bold;text-decoration:none;">📜 History</a>
         </div>
+    </header>
 
-        <div id="orderList" class="order-list"></div>
+    <!-- Controls + Filters -->
+    <div class="controls">
+        <select id="serviceSelect" aria-label="Pilih layanan">
+            <option value="">Pilih Layanan</option>
+            <option value="go">Google</option>
+            <option value="ni">Gojek</option>
+            <option value="wa">WhatsApp</option>
+            <option value="bnu">Qpon</option>
+            <option value="tg">Telegram</option>
+            <option value="eh">Telegram 2.0</option>
+            <option value="ot">Any Other</option>
+        </select>
+
+        <select id="countrySelect" aria-label="Pilih negara">
+            <option value="">Pilih Negara</option>
+        </select>
+
+        <select id="priceSelect" aria-label="Pilih harga maksimum" disabled>
+            <option value="">Pilih Harga Maksimum</option>
+        </select>
+
+        <button class="primary" id="createBtn" onclick="createOrder()">🚀 Buat Order Baru</button>
+        <button class="ghost" id="refreshBtn" title="Refresh status & saldo">🔁 Refresh</button>
+
+        <!-- Filters -->
+        <select id="filterStatus" title="Filter Status">
+            <option value="">Semua Status</option>
+            <option value="WAITING">WAITING</option>
+            <option value="COMPLETED">COMPLETED</option>
+        </select>
+        <select id="filterService" title="Filter Service">
+            <option value="">Semua Layanan</option>
+            <option value="go">Google</option>
+            <option value="ni">Gojek</option>
+            <option value="wa">WhatsApp</option>
+            <option value="bnu">Qpon</option>
+            <option value="tg">Telegram</option>
+            <option value="eh">Telegram 2.0</option>
+            <option value="ot">Any Other</option>
+        </select>
+        <select id="filterCountry" title="Filter Negara">
+            <option value="">Semua Negara</option>
+        </select>
+        <input id="filterSearch" type="search" placeholder="Cari nomor/id..." />
+        <button class="ghost" id="filterReset">Reset</button>
     </div>
-    <div id="notification" class="notification"></div>
+
+    <div id="orderList" class="order-list"></div>
+</div>
+<div id="notification" class="notification"></div>
+
+<!-- Modal Deposit -->
+<div class="modal-backdrop" id="depositModal" aria-hidden="true">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="depositTitle">
+    <div class="modal-header">
+      <div class="modal-title" id="depositTitle">Payment CRYPTOMUS</div>
+      <button class="modal-close" onclick="closeDeposit()">× Close</button>
+    </div>
+    <div class="grid2">
+      <div>
+        <span class="badge">Cryptocurrency</span>
+        <span class="badge">USDT</span>
+        <span class="badge">Arbitrum</span>
+        <span class="badge">Min 1 USDT</span>
+      </div>
+      <div class="hint">Your Cryptomus deposit address is listed below</div>
+      <div class="hint">Transfer the required amount of USDT to this address</div>
+      <div class="hint">This deposit address is assigned to you, you can use it for deposits at any time</div>
+      <div class="warn">⚡ Attention! Payment system commission is 0.9%</div>
+
+      <div style="font-weight:800; margin-top:6px;">Deposit address</div>
+      <div class="address-row">
+        <div class="address" id="depAddr">0x83d31888d2d486820a38b9a5d7a2bb3a2bcd373f</div>
+        <button class="copy-btn" onclick="copyDepositAddress()">📋 Copy</button>
+      </div>
+
+      <!-- Optional: QR (bisa tampilkan kalau mau) -->
+      <div class="qr" id="qrWrap"></div>
+    </div>
+  </div>
+</div>
 
 <script>
-    let activeTrackers = {};
+let activeTrackers = {};
+let countryPrefixes = {};
+let ordersCache = []; // untuk filter client-side
 
-    function showNotification(msg, timeout=3000){
-        const n = document.getElementById('notification');
-        n.textContent = msg;
-        n.style.display = 'block';
-        setTimeout(()=> n.style.display = 'none', timeout);
-    }
-
-    async function loadBalance(){
-        try{
-            const res = await fetch('/api/balance');
-            const j = await res.json();
-            document.getElementById('balance').textContent = j.success ? j.balance : 'Error';
-        }catch(e){
-            document.getElementById('balance').textContent = 'Error';
-        }
-    }
-
-async function loadOrders(){
-    try{
-        // Stop semua tracker aktif biar nggak numpuk
-        for (let id in activeTrackers) {
-            clearInterval(activeTrackers[id]);
-        }
-        activeTrackers = {};
-
-        document.getElementById('orderList').innerHTML = '';
-
-        const res = await fetch('/api/orders');
-        const j = await res.json();
-        if(j.success){
-            j.orders.forEach(o => addOrderCard(o));
-        }
-    }catch(e){
-        console.error(e);
-    }
+function showNotification(msg, timeout=2000){
+    const n = document.getElementById('notification');
+    n.textContent = msg;
+    n.style.display = 'block';
+    setTimeout(()=> n.style.display = 'none', timeout);
 }
 
+/* ==== Deposit Modal ==== */
+function openDeposit(){
+    const m = document.getElementById('depositModal');
+    m.style.display = 'flex';
+    m.setAttribute('aria-hidden','false');
+    document.addEventListener('keydown', escCloseDeposit);
+    // (opsional) render QR pakai API eksternal/QR lib; di sini kita simple data URL
+    renderQR();
+}
+function closeDeposit(){
+    const m = document.getElementById('depositModal');
+    m.style.display = 'none';
+    m.setAttribute('aria-hidden','true');
+    document.removeEventListener('keydown', escCloseDeposit);
+}
+function escCloseDeposit(e){ if(e.key === 'Escape') closeDeposit(); }
+document.getElementById('depositModal').addEventListener('click', (e)=> {
+    if (e.target.id === 'depositModal') closeDeposit();
+});
+function copyDepositAddress(){
+    const addr = document.getElementById('depAddr').textContent.trim();
+    navigator.clipboard.writeText(addr);
+    showNotification('Alamat deposit disalin');
+}
+function renderQR(){
+    // QR opsional (dummy sederhana). Kalau mau real QR, bisa pakai library QRCode.js.
+    const wrap = document.getElementById('qrWrap');
+    wrap.innerHTML = '';
+    const addr = document.getElementById('depAddr').textContent.trim();
+    // tampilkan sebagai link arbiscan untuk sementara
+    const a = document.createElement('a');
+    a.href = `https://arbiscan.io/address/${addr}`;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.textContent = 'Lihat di Arbiscan (opsional)';
+    wrap.style.display = 'flex';
+    wrap.appendChild(a);
+}
 
-    async function createOrder(){
-        const service = document.getElementById('serviceSelect').value;
-        const country = document.getElementById('countrySelect').value;
-        if(!service || !country){ showNotification('Pilih layanan dan negara dulu!'); return; }
+/* ==== LOADERS ==== */
+async function loadBalance(){
+    try{ const res=await fetch('/api/balance'); const j=await res.json();
+        document.getElementById('balance').textContent = j.success ? j.balance : 'Error';
+    }catch{ document.getElementById('balance').textContent = 'Error'; }
+}
+async function loadCountryPrefixes(){ try{ const r=await fetch('/static/prefix.json'); countryPrefixes=await r.json(); }catch{ countryPrefixes={}; } }
+async function loadCountries(){
+    const selects = [document.getElementById('countrySelect'), document.getElementById('filterCountry')];
+    selects.forEach(sel=> sel.innerHTML = '<option value="">' + (sel.id==='countrySelect' ? 'Pilih Negara' : 'Semua Negara') + '</option>');
+    try {
+        const res = await fetch('/api/countries');
+        const countries = await res.json();
+        const keys = Object.keys(countries).sort((a,b)=>countries[a].localeCompare(countries[b]));
+        keys.forEach(key=>{
+            const opt1 = document.createElement('option');
+            opt1.value = key; opt1.textContent = countries[key];
+            document.getElementById('countrySelect').appendChild(opt1);
 
-        const btn = document.getElementById('createBtn');
-        btn.disabled = true; btn.textContent = '⏳ Memproses...';
+            const opt2 = document.createElement('option');
+            opt2.value = key; opt2.textContent = countries[key];
+            document.getElementById('filterCountry').appendChild(opt2);
+        });
+    } catch{ showNotification('⚠️ Gagal memuat negara'); }
+}
+async function loadPrices(){
+    const service = document.getElementById('serviceSelect').value;
+    const country = document.getElementById('countrySelect').value;
+    const select = document.getElementById('priceSelect');
+    select.innerHTML = '<option value="">Pilih Harga Maksimum</option>';
+    if (!service || !country) { select.disabled = true; return; }
+    try {
+        const res = await fetch('/api/prices', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({service, country}) });
+        const j = await res.json();
+        if (j.success && Array.isArray(j.prices) && j.prices.length > 0) {
+            j.prices.forEach(p=>{ const v=Number(p); if(Number.isFinite(v)){ const opt=document.createElement('option'); opt.value=v; opt.textContent=`$${v.toFixed(4)}`; select.appendChild(opt);} });
+            select.disabled = false;
+        } else { select.disabled = true; }
+    } catch { select.disabled = true; }
+}
 
-        try{
-            const res = await fetch('/api/create', {
-                method:'POST',
-                headers:{'Content-Type':'application/json'},
-                body: JSON.stringify({service,country})
-            });
-            const j = await res.json();
-            if(j.success){
-                addOrderCard(j.order);
-                startStatusTracker(j.order.id);
-                startCountdown(j.order.id, j.order.created_at);
-                showNotification(`✅ Order #${j.order.id} dibuat!`);
-                loadBalance();
-            } else {
-                showNotification('❌ '+(j.error || 'Gagal membuat order'));
-            }
-        }catch(e){
-            showNotification('⚠️ Koneksi error!');
-        }finally{
-            btn.disabled = false; btn.textContent = '🚀 Buat Order Baru';
+/* ==== FULL RELOAD ala kode awal ==== */
+async function fullReload(){
+    // stop semua tracker
+    for (let id in activeTrackers){ clearInterval(activeTrackers[id]); }
+    activeTrackers = {};
+
+    // ambil data
+    const res = await fetch('/api/orders');
+    const j = await res.json();
+    if(!j.success){ return; }
+    ordersCache = j.orders || [];
+
+    renderFiltered(); // render sesuai filter aktif
+    await loadBalance();
+}
+
+/* ==== FILTER ENGINE ==== */
+function currentFilters(){
+    return {
+        status: document.getElementById('filterStatus').value,
+        service: document.getElementById('filterService').value,
+        country: document.getElementById('filterCountry').value,
+        q: (document.getElementById('filterSearch').value || '').trim().toLowerCase()
+    };
+}
+function applyFilters(list, f){
+    return list.filter(o=>{
+        if (f.status && o.status !== f.status) return false;
+        if (f.service && (o.service !== f.service)) return false;
+        if (f.country && (o.country !== f.country)) return false;
+        if (f.q){
+            const blob = `${o.id} ${o.number} ${o.service} ${o.service_name||''} ${o.country_name||o.country}`.toLowerCase();
+            if (!blob.includes(f.q)) return false;
         }
-    }
+        return true;
+    });
+}
+function renderFiltered(){
+    const f = currentFilters();
+    const data = applyFilters(ordersCache, f);
 
- function addOrderCard(order){
+    // reset dom
+    const wrap = document.getElementById('orderList');
+    wrap.innerHTML = '';
+
+    // render cards
+    data.forEach(o=> addOrderCard(o));
+
+    // tracker + countdown
+    data.forEach(o=>{
+        if (o.status === 'WAITING') startStatusTracker(o.id);
+        startCountdown(o.id, o.created_at);
+    });
+}
+
+/* ==== CREATE ORDER ==== */
+async function createOrder(){
+    const service = document.getElementById('serviceSelect').value;
+    const country = document.getElementById('countrySelect').value;
+    const maxPrice = document.getElementById('priceSelect').value;
+    if(!service || !country){ showNotification('Pilih layanan & negara dulu!'); return; }
+    const btn = document.getElementById('createBtn');
+    btn.disabled = true; btn.textContent = '⏳ Memproses...';
+    try{
+        const res = await fetch('/api/create', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({service, country, maxPrice}) });
+        const j = await res.json();
+        if(j.success){
+            showNotification(`✅ Order #${j.order.id} dibuat!`);
+            await fullReload();
+        } else { showNotification('❌ '+(j.error || 'Gagal membuat order')); }
+    }catch{ showNotification('⚠️ Koneksi error!'); }
+    btn.disabled = false; btn.textContent = '🚀 Buat Order Baru';
+}
+
+/* ==== CARD ==== */
+function getCountryCode(countryId){ return countryPrefixes[countryId] || ''; }
+
+function addOrderCard(order){
     const countryCode = getCountryCode(order.country);
     const card = document.createElement('div');
     card.className = 'order-card';
     card.id = `order-${order.id}`;
+    card.dataset.hadSms = (order.status==='COMPLETED' && order.sms) ? '1' : '0';
+
+    const ccTitle = countryCode ? `Salin nomor (dengan ${countryCode})` : 'Salin nomor (dengan kode negara)';
+
     card.innerHTML = `
-    <div class="order-header">
+      <div class="order-header">
         <div>
             <div class="order-id">#${order.id}</div>
             <div class="service-name">${order.service_name || order.service}</div>
-            <div class="country-name" style="color: var(--muted); font-size: 0.9em;">${order.country_name || order.country}</div>
+            <div class="country-name">${order.country_name || order.country}</div>
         </div>
-        <div class="order-number">${order.number}</div>
-    </div>
-        <div>
-            <div>Status: <span class="status">${order.status}</span></div>
-            <div>Waktu tersisa: <span class="countdown" id="countdown-${order.id}">20:00</span></div>
-            <div class="sms-box" id="sms-${order.id}">${order.status==='COMPLETED' && order.sms ? order.sms : ''}</div>
-            <div class="action-buttons">
-                <button class="btn-small btn-cancel" onclick="copyNumber('${order.number}', true, '${countryCode}')">Salin ${countryCode}</button>
-                <button class="btn-small btn-cancel" onclick="copyNumber('${order.number}', false, '${countryCode}')">Salin tanpa ${countryCode}</button>
-                <button class="btn-small btn-cancel" onclick="copyNumberWithFullPrefix('${order.number}', '${countryCode}')">Salin +${countryCode}</button>
-            </div>
-            <div class="action-buttons" style="margin-top:8px;">
-    <button class="btn-small btn-request" onclick="requestAgain('${order.id}')">🔄 Minta Ulang</button>
-    <button class="btn-small btn-cancel" style="background: var(--danger); color: white;" onclick="cancelOrder('${order.id}')">🛑 Cancel</button>
-    <button class="btn-small btn-delete" onclick="deleteOrder('${order.id}')">🗑️ Delete</button>
-</div>
+        <div class="status-badge ${order.status==='COMPLETED'?'b-done':'b-wait'}"><span class="status">${order.status}</span></div>
+      </div>
+      <div>
+        <div class="bar-row">
+            <div class="order-number">${order.number}</div>
+            <!-- ICON: salin nomor dengan kode negara (tanpa +) -->
+            <button class="cc-copy-icon" title="${ccTitle}" onclick="copyNumberWithCountry('${order.number}','${countryCode}')">📋</button>
+        </div>
+        <div>Harga: <span class="price">$${Number(order.price||0).toFixed(4)}</span></div>
+        <div>Waktu tersisa: <span class="countdown status-badge" id="countdown-${order.id}">20:00</span></div>
 
+        <div class="sms-wrap">
+            <div class="sms-box" id="sms-${order.id}">${order.status==='COMPLETED' && order.sms ? order.sms : ''}</div>
+            <button class="sms-copy" id="smscopy-${order.id}" title="Salin SMS" onclick="copySms('${order.id}')">📋</button>
         </div>
+
+        <div class="action-buttons">
+            <!-- Tombol 'Salin 62' dihapus; sisakan dua di bawah -->
+            <button class="btn-small" onclick="copyNumberWithoutCountry('${order.number}','${countryCode}')">Salin tanpa ${countryCode||'kode'}</button>
+            <button class="btn-small" onclick="copyNumberWithPlus('${order.number}','${countryCode}')">Salin +${countryCode||''}</button>
+        </div>
+
+        <div class="action-buttons" style="margin-top:8px;" id="btn-row-${order.id}"></div>
+      </div>
     `;
-    // Tambahkan kartu order baru di bagian akhir daftar, bukan di depan
     document.getElementById('orderList').appendChild(card);
-    if(order.status === 'WAITING') {
-        startStatusTracker(order.id);
-        startCountdown(order.id, order.created_at);
-    }
+
+    toggleSmsCopyIcon(order.id);
+    updateButtons(order.id);
 }
 
-    function getCountryCode(country){
-        if(country === '6') return '62';
-        if(country === '0') return '7';
-        if(country === '3') return '86';
-        if(country === '4') return '63';
-        if(country === '10') return '84';
-        return '';
-    }
+function updateCard(card, o){
+    card.querySelector('.service-name').textContent = o.service_name || o.service;
+    card.querySelector('.country-name').textContent = o.country_name || o.country;
+    card.querySelector('.order-number').textContent = o.number;
 
-    function copyNumber(number, withPrefix, countryCode){
-        let txt = number;
-        if(!withPrefix) txt = number.replace(new RegExp(`^${countryCode}`),'');
-        navigator.clipboard.writeText(txt);
-        showNotification('Nomor disalin ke clipboard');
-    }
+    const badge = card.querySelector('.status-badge');
+    badge.className = `status-badge ${o.status==='COMPLETED'?'b-done':'b-wait'}`;
+    badge.querySelector('.status').textContent = o.status;
 
-    function copyNumberWithFullPrefix(number, countryCode){
-        let n = number;
-        if(!n.startsWith('+')) n = `+${countryCode}${n.replace(new RegExp(`^${countryCode}`), '')}`;
-        navigator.clipboard.writeText(n);
-        showNotification('Nomor lengkap disalin ke clipboard');
+    if (o.status==='COMPLETED' && o.sms) {
+        card.dataset.hadSms = '1';
+        document.getElementById(`sms-${o.id}`).textContent = o.sms;
     }
+    toggleSmsCopyIcon(o.id);
+    updateButtons(o.id);
+}
 
-    async function cancelOrder(orderId){
-        try{
-            const res = await fetch(`/api/cancel/${orderId}`, {method:'POST'});
-            const j = await res.json();
-            if(j.success){
-                deleteFromUI(orderId);
-                showNotification('✅ Order dibatalkan');
-            } else showNotification('❌ Gagal cancel order');
-        }catch(e){
-            showNotification('⚠️ Koneksi error!');
-        }
-    }
+function toggleSmsCopyIcon(orderId){
+    const sms = (document.getElementById(`sms-${orderId}`)?.textContent || '').trim();
+    const btn = document.getElementById(`smscopy-${orderId}`);
+    if (!btn) return;
+    btn.style.display = sms ? 'inline-block' : 'none';
+}
 
+/* ==== COPY HELPERS ==== */
+// Salin nomor dengan kode negara (tanpa '+')
+function copyNumberWithCountry(number, countryCode){
+    let n = (number || '').trim();
+    if (!countryCode){ showNotification('Kode negara tidak tersedia'); return; }
+    if (n.startsWith('+')) n = n.slice(1);
+    const re = new RegExp('^'+countryCode);
+    if (!re.test(n)) n = countryCode + n.replace(/^(\+?\d{1,4})?/, '').replace(re,'');
+    navigator.clipboard.writeText(n);
+    showNotification('Nomor (dgn kode negara) disalin');
+}
+function copyNumberWithoutCountry(number, countryCode){
+    let n = (number || '').trim();
+    const re = new RegExp('^\\+?'+countryCode);
+    n = n.replace(re,'');
+    navigator.clipboard.writeText(n);
+    showNotification('Nomor tanpa kode negara disalin');
+}
+function copyNumberWithPlus(number, countryCode){
+    let n = (number || '').trim();
+    const re = new RegExp('^\\+?'+countryCode);
+    n = '+' + countryCode + n.replace(re,'');
+    navigator.clipboard.writeText(n);
+    showNotification('Nomor +kode negara disalin');
+}
+function copySms(orderId){
+    const el = document.getElementById(`sms-${orderId}`);
+    const t = (el?.textContent||'').trim();
+    navigator.clipboard.writeText(t);
+    showNotification(t ? 'SMS disalin' : 'Belum ada SMS');
+}
+
+/* ==== TOMBOL DINAMIS & ACTIONS ==== */
+async function cancelOrder(orderId){
+    try{
+        const res = await fetch(`/api/cancel/${orderId}`, {method:'POST'});
+        const j = await res.json();
+        if(j.success){ showNotification('✅ Order dibatalkan'); await fullReload(); }
+        else showNotification('❌ Gagal cancel');
+    }catch{ showNotification('⚠️ Koneksi error!'); }
+}
 async function requestAgain(orderId){
     try{
         const res = await fetch(`/api/request_again/${orderId}`, {method:'POST'});
         const j = await res.json();
         if(j.success){
+            await fullReload();
             showNotification('✅ Permintaan ulang dikirim');
-            loadOrders(); // langsung refresh list order
-        } else {
-            showNotification('❌ Gagal minta ulang: ' + (j.error || ''));
-        }
-    }catch(e){
-        showNotification('⚠️ Koneksi error!');
-    }
+        } else showNotification('❌ Gagal minta ulang: ' + (j.error || ''));
+    }catch{ showNotification('⚠️ Koneksi error!'); }
 }
-
-
-
-
-async function refreshOrderStatusOnly(){
-    try{
-        const res = await fetch('/api/orders');
-        const j = await res.json();
-        if(j.success){
-            j.orders.forEach(o => {
-                const card = document.getElementById(`order-${o.id}`);
-                if(card){
-                    card.querySelector('.status').textContent = o.status;
-                    if(o.status === 'COMPLETED' && o.sms){
-                        document.getElementById(`sms-${o.id}`).textContent = o.sms;
-                    }
-                } else {
-                    // Order baru yang belum ada di UI → tambahkan
-                    addOrderCard(o);
-                }
-            });
-        }
-    }catch(e){
-        console.error(e);
-    }
-}
-
 async function finishOrder(orderId){
     try{
         const res = await fetch(`/api/finish/${orderId}`, {method:'POST'});
         const j = await res.json();
-        if(j.success){
-            showNotification('✅ Order diselesaikan');
-            loadOrders();
-        } else {
-            showNotification('❌ Gagal menyelesaikan order');
-        }
-    }catch(e){
-        showNotification('⚠️ Koneksi error!');
-    }
+        if(j.success){ showNotification('✅ Order diselesaikan'); await fullReload(); }
+        else showNotification('❌ Gagal menyelesaikan order');
+    }catch{ showNotification('⚠️ Koneksi error!'); }
+}
+async function deleteOrder(orderId){
+    try{
+        const res = await fetch(`/api/remove_order/${orderId}`, {method:'POST'});
+        const j = await res.json();
+        if(j.success){ showNotification('✅ Order dihapus'); await fullReload(); }
+        else showNotification('❌ Gagal hapus order');
+    }catch{ showNotification('⚠️ Koneksi error!'); }
 }
 
-    async function deleteOrder(orderId){
-        try{
-            const res = await fetch(`/api/remove_order/${orderId}`, {method:'POST'});
-            const j = await res.json();
-            if(j.success){
-                deleteFromUI(orderId);
-                showNotification('✅ Order dihapus');
-            } else showNotification('❌ Gagal hapus order');
-        }catch(e){
-            showNotification('⚠️ Koneksi error!');
-        }
-    }
+function updateButtons(orderId){
+    const card = document.getElementById(`order-${orderId}`);
+    const hadSms = card.dataset.hadSms === '1';
+    const hasSmsNow = !!(document.getElementById(`sms-${orderId}`)?.textContent.trim());
+    const row = document.getElementById(`btn-row-${orderId}`);
+    row.innerHTML = '';
 
-    function deleteFromUI(orderId){
-        const el = document.getElementById(`order-${orderId}`);
-        if(el) el.remove();
-        clearInterval(activeTrackers[orderId]);
-        delete activeTrackers[orderId];
+    if (hasSmsNow){
+        const btnReq = document.createElement('button');
+        btnReq.className = 'btn-small';
+        btnReq.textContent = '🔄 Minta Ulang';
+        btnReq.onclick = ()=>requestAgain(orderId);
+        row.appendChild(btnReq);
     }
+    if (hadSms){
+        const btnFinish = document.createElement('button');
+        btnFinish.className = 'btn-small btn-ok';
+        btnFinish.textContent = '✅ Selesaikan';
+        btnFinish.onclick = ()=>finishOrder(orderId);
+        row.appendChild(btnFinish);
+    }
+    const btnCancel = document.createElement('button');
+    btnCancel.className = 'btn-small';
+    btnCancel.style.background = 'var(--danger)'; btnCancel.style.color = '#fff'; btnCancel.style.borderColor = 'transparent';
+    btnCancel.textContent = '🛑 Cancel';
+    btnCancel.onclick = ()=>cancelOrder(orderId);
+    row.appendChild(btnCancel);
 
-    function startStatusTracker(orderId){
+    const btnDelete = document.createElement('button');
+    btnDelete.className = 'btn-small btn-delete';
+    btnDelete.textContent = '🗑️ Delete';
+    btnDelete.onclick = ()=>deleteOrder(orderId);
+    row.appendChild(btnDelete);
+}
+
+/* ==== POLLING STATUS ==== */
+function startStatusTracker(orderId){
     if(activeTrackers[orderId]) return;
     activeTrackers[orderId] = setInterval(async ()=>{
         try{
@@ -438,107 +509,82 @@ async function finishOrder(orderId){
             const j = await res.json();
             const card = document.getElementById(`order-${orderId}`);
             if(!card){ clearInterval(activeTrackers[orderId]); delete activeTrackers[orderId]; return; }
-            const statusEl = card.querySelector('.status');
+
+            const badge = card.querySelector('.status-badge');
             const smsBox = document.getElementById(`sms-${orderId}`);
 
-            // simpan raw status untuk kondisi tombol
-            card.dataset.rawStatus = j.status;
-
             if(j.status === 'COMPLETED'){
-                statusEl.textContent = '✅ SMS Diterima';
+                badge.className = 'status-badge b-done';
+                card.querySelector('.status').textContent = 'COMPLETED';
                 if(j.sms && smsBox) smsBox.textContent = j.sms;
-                clearInterval(activeTrackers[orderId]);
-                delete activeTrackers[orderId];
+                card.dataset.hadSms = '1';
+                toggleSmsCopyIcon(orderId);
+                updateButtons(orderId);
+
+                clearInterval(activeTrackers[orderId]); delete activeTrackers[orderId];
             } else {
-                statusEl.textContent = j.status;
+                badge.className = 'status-badge b-wait';
+                card.querySelector('.status').textContent = j.status;
             }
-
-            // update tombol minta ulang sesuai kondisi
-            updateRequestButton(card, orderId);
-
-        }catch(e){
-            console.error(e);
-        }
+        }catch(e){ /* silent */ }
     }, 2500);
 }
 
-
-
-
-    function startCountdown(orderId, createdAt) {
-    const countdownEl = document.getElementById(`countdown-${orderId}`);
-    if (!countdownEl) return;
-
-    const createdTime = new Date(createdAt).getTime();
-    const endTime = createdTime + (20 * 60 * 1000); // 20 menit
-
+/* ==== COUNTDOWN ==== */
+function startCountdown(orderId, createdAt) {
+    const el = document.getElementById(`countdown-${orderId}`);
+    if (!el) return;
+    const base = new Date(createdAt).getTime();
+    const endTime = base + (20 * 60 * 1000);
     const timer = setInterval(() => {
-        const now = Date.now();
-        const diff = endTime - now;
-
+        const diff = endTime - Date.now();
         if (diff <= 0) {
-            countdownEl.textContent = "00:00";
+            el.textContent = "00:00";
             clearInterval(timer);
-
-            // Panggil API timeout untuk pindahkan ke history
-            fetch(`/api/timeout/${orderId}`, { method: 'POST' })
-                .then(() => loadOrders())
-                .catch(err => console.error("Gagal set timeout:", err));
-
+            fetch(`/api/timeout/${orderId}`, { method: 'POST' }).then(()=>fullReload());
             return;
         }
-
-        const minutes = Math.floor(diff / (1000 * 60));
-        const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-        countdownEl.textContent = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
+        const m = Math.floor(diff / 60000), s = Math.floor((diff % 60000) / 1000);
+        el.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
     }, 1000);
 }
 
-
-    // Init
-    loadBalance();
-    // Load country list dynamically from API or use fallback
-    loadCountries();
-    loadOrders();
-    // Refresh balance periodically
-    setInterval(loadBalance, 30000);
-
-// Fungsi untuk memuat daftar negara dari API atau fallback manual
-async function loadCountries(){
-    const select = document.getElementById('countrySelect');
-    // Bersihkan opsi yang ada dan tambahkan opsi default
-    select.innerHTML = '<option value="">Pilih Negara</option>';
-    try {
-        const res = await fetch('/api/countries');
-        const countries = await res.json();
-        // API /api/countries mengembalikan objek/dictionary negara
-        if (countries && typeof countries === 'object') {
-            Object.keys(countries).forEach(key => {
-                const opt = document.createElement('option');
-                opt.value = key;
-                opt.textContent = countries[key];
-                select.appendChild(opt);
-            });
-            return;
-        }
-    } catch(e){
-        console.error('Gagal memuat daftar negara dari API:', e);
-    }
-    // Jika API tidak tersedia atau gagal, gunakan daftar manual sebagai fallback
-    const manualCountries = {
-        '6': 'Indonesia',
-        '0': 'Russia',
-        '3': 'China',
-        '4': 'Philippines',
-        '10': 'Vietnam'
-    };
-    Object.keys(manualCountries).forEach(key => {
-        const opt = document.createElement('option');
-        opt.value = key;
-        opt.textContent = manualCountries[key];
-        select.appendChild(opt);
-    });
+/* ==== REFRESH ==== */
+async function refreshAll(){
+    document.getElementById('refreshBtn').disabled = true;
+    await fullReload();
+    document.getElementById('refreshBtn').disabled = false;
 }
+
+/* ==== EVENTS ==== */
+document.getElementById('serviceSelect').addEventListener('change', loadPrices);
+document.getElementById('countrySelect').addEventListener('change', loadPrices);
+document.getElementById('refreshBtn').addEventListener('click', refreshAll);
+
+/* Filter events */
+['filterStatus','filterService','filterCountry'].forEach(id=>{
+    document.getElementById(id).addEventListener('change', renderFiltered);
+});
+document.getElementById('filterSearch').addEventListener('input', ()=> {
+    clearTimeout(window.__fsto);
+    window.__fsto = setTimeout(renderFiltered, 150);
+});
+document.getElementById('filterReset').addEventListener('click', ()=>{
+    document.getElementById('filterStatus').value = '';
+    document.getElementById('filterService').value = '';
+    document.getElementById('filterCountry').value = '';
+    document.getElementById('filterSearch').value = '';
+    renderFiltered();
+});
+
+/* ==== INIT ==== */
+(async ()=>{
+    await loadBalance();
+    await loadCountryPrefixes();
+    await loadCountries();
+    await fullReload();
+    setInterval(loadBalance, 30000);
+})();
 </script>
 </body>
 </html>
