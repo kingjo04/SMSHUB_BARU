@@ -1,60 +1,274 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
 <meta charset="utf-8">
-<title>History Order</title>
+<title>📜 History Order</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
 <style>
-    body { font-family: Arial, sans-serif; background: #0f1724; color: white; padding: 20px; }
-    a { color: #06b6d4; text-decoration: none; font-weight: bold; }
-    table { width: 100%; border-collapse: collapse; background: #0b1220; margin-top:15px; }
-    th, td { padding: 10px; border: 1px solid #222; }
-    th { background: #06b6d4; color: black; }
-    tr:nth-child(even) { background: rgba(255,255,255,0.03); }
-    .sms { white-space: pre-wrap; color: #94a3b8; }
+  :root{
+    --bg:#0f1724; --card:#0b1220; --muted:#94a3b8; --accent:#06b6d4;
+    --success:#16a34a; --danger:#ef4444; --warning:#f59e0b; --info:#3b82f6;
+    --glass:rgba(255,255,255,0.03);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;font-family:'Roboto',sans-serif;background:linear-gradient(180deg,#071025 0%,#07183a 100%);color:#e6eef7}
+  .container{max-width:1100px;margin:0 auto;padding:24px}
+  header{display:flex;gap:12px;align-items:center;justify-content:space-between;margin-bottom:16px}
+  h1{margin:0;font-size:24px}
+  .back{color:black;text-decoration:none;background:var(--accent);padding:8px 12px;border-radius:10px;font-weight:700}
+  .panel{background:var(--card);border:1px solid rgba(255,255,255,0.06);border-radius:14px;padding:14px}
+  .filters{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:10px;margin-bottom:12px}
+  .filters select,.filters input{
+    background:#1f2937;border:1px solid rgba(255,255,255,0.08);color:#e6eef7;
+    padding:10px 12px;border-radius:10px;outline:none
+  }
+  .table-wrap{overflow:auto;border-radius:12px;border:1px solid rgba(255,255,255,0.06)}
+  table{width:100%;border-collapse:separate;border-spacing:0;background:var(--card)}
+  thead th{
+    position:sticky;top:0;z-index:1;background:#0e172a;padding:12px;text-align:left;
+    font-size:13px;letter-spacing:.02em;border-bottom:1px solid rgba(255,255,255,0.08)
+  }
+  tbody td{padding:12px;border-bottom:1px solid rgba(255,255,255,0.05);vertical-align:top}
+  tbody tr:hover{background:rgba(255,255,255,0.02)}
+  .mono{font-family:ui-monospace, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}
+  .muted{color:var(--muted)}
+  .badge{
+    display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:12px;
+    padding:6px 10px;border-radius:999px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.08)
+  }
+  .s-success{background:rgba(22,163,74,.15);border-color:rgba(22,163,74,.35);color:#86efac}
+  .s-danger{background:rgba(239,68,68,.15);border-color:rgba(239,68,68,.35);color:#fecaca}
+  .s-warning{background:rgba(245,158,11,.15);border-color:rgba(245,158,11,.35);color:#fde68a}
+  .s-info{background:rgba(59,130,246,.15);border-color:rgba(59,130,246,.35);color:#bfdbfe}
+  .chip{display:inline-block;background:rgba(255,255,255,.06);padding:4px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.08);font-size:12px}
+  .btn{border:none;border-radius:10px;padding:8px 10px;font-weight:700;cursor:pointer}
+  .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.08);color:#e6eef7}
+  .btn-ghost:hover{background:rgba(255,255,255,0.04)}
+  .sms{max-width:520px;white-space:pre-wrap;color:var(--muted)}
+  .nowrap{white-space:nowrap}
+  .pill-time{display:inline-block;border:1px solid rgba(255,255,255,0.08);background:rgba(255,255,255,0.04);padding:4px 8px;border-radius:999px}
+  @media (max-width:900px){.filters{grid-template-columns:repeat(2, minmax(0,1fr))}.sms{max-width:unset}}
+  @media (max-width:560px){.filters{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<h1>📜 History Order</h1>
-<p><a href="/">⬅ Kembali</a></p>
-<table>
-    <thead>
-        <tr>
-            <th>Order ID</th>
-            <th>Service</th>
-            <th>Country</th>
-            <th>Nomor</th>
-            <th>Status</th>
-            <th>SMS</th>
-            <th>Waktu</th>
-        </tr>
-    </thead>
-    <tbody id="historyTable"></tbody>
-</table>
+  <div class="container">
+    <header>
+      <h1>📜 History Order</h1>
+      <a class="back" href="/">⬅ Kembali</a>
+    </header>
+
+    <div class="panel">
+      <div class="filters">
+        <select id="fService"><option value="">Semua Service</option></select>
+        <select id="fCountry"><option value="">Semua Country</option></select>
+        <select id="fStatus">
+          <option value="">Semua Status</option>
+          <option value="CANCELED">CANCELED</option>
+          <option value="DELETED">DELETED</option>
+          <option value="TIMEOUT">TIMEOUT</option>
+          <option value="BANNED">BANNED</option>
+          <option value="UNKNOWN">UNKNOWN</option>
+        </select>
+        <input id="fSearch" type="search" placeholder="Cari ID / Nomor / SMS..." />
+      </div>
+
+      <div class="table-wrap">
+        <table id="histTable">
+          <thead>
+            <tr>
+              <th style="min-width:110px">Order ID</th>
+              <th style="min-width:120px">Service</th>
+              <th style="min-width:140px">Country</th>
+              <th style="min-width:140px">Nomor</th>
+              <th style="min-width:120px">Status</th>
+              <th style="min-width:320px">SMS</th>
+              <th style="min-width:260px">Waktu</th>
+            </tr>
+          </thead>
+          <tbody id="historyTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
 <script>
-async function loadHistory(){
+  const SERVICES = {"go":"Google","ni":"Gojek","wa":"WhatsApp","bnu":"Qpon","tg":"Telegram","eh":"Telegram 2.0","ot":"Any Other"};
+  let RAW = [];
+  let countriesMap = {};
+
+  const statusClass = (s) => {
+    s = (s||'').toUpperCase();
+    if (s.includes('CANCEL')) return 's-danger';
+    if (s.includes('TIME')) return 's-warning';
+    if (s.includes('DELETE')) return 's-danger';
+    if (s.includes('BANNED')) return 's-danger';
+    if (s.includes('OK') || s.includes('DONE') || s.includes('COMPLETE')) return 's-success';
+    return 's-info';
+  };
+
+  async function fetchCountries(){
+    try{
+      const res = await fetch('/api/countries');
+      countriesMap = await res.json();
+    }catch(e){
+      countriesMap = {};
+    }
+  }
+
+  function fillFilterOptions(){
+    const fService = document.getElementById('fService');
+    Object.entries(SERVICES).forEach(([k,v])=>{
+      const opt = document.createElement('option'); opt.value = v; opt.textContent = v; fService.appendChild(opt);
+    });
+    const fCountry = document.getElementById('fCountry');
+    Object.entries(countriesMap)
+      .sort((a,b)=>a[1].localeCompare(b[1]))
+      .forEach(([id,name])=>{
+        const opt = document.createElement('option'); opt.value = name; opt.textContent = name; fCountry.appendChild(opt);
+      });
+  }
+
+  function relativeFromNow(dateObj){
+    const now = new Date();
+    const diffMs = now - dateObj;
+    if (diffMs < 0) return 'baru saja';
+    const s = Math.floor(diffMs/1000);
+    const m = Math.floor(s/60);
+    const h = Math.floor(m/60);
+    const d = Math.floor(h/24);
+    if (d>0) return `${d}h ${h%24}j`;
+    if (h>0) return `${h}j ${m%60}m`;
+    if (m>0) return `${m}m ${s%60}s`;
+    return `${s}s`;
+  }
+
+  function fmtNice(iso){
+    try{
+      const d = new Date(iso);
+      const locale = 'id-ID';
+      const datePart = d.toLocaleDateString(locale, { day:'2-digit', month:'short', year:'numeric' });
+      const timePart = d.toLocaleTimeString(locale, { hour:'2-digit', minute:'2-digit', second:'2-digit' });
+      const rel = relativeFromNow(d);
+      return `<span class="nowrap">${datePart}, ${timePart}</span> <span class="pill-time">(${rel} lalu)</span>`;
+    }catch(e){
+      return iso || '-';
+    }
+  }
+
+  function copyText(t){ navigator.clipboard.writeText(t||''); }
+
+  function renderRow(o){
+    const badgeCls = statusClass(o.status);
+    const smsText = (o.sms||'').trim();
+    const smsId = `sms-${o.id}`;
+    const smsCollapsed = smsText.length > 60 ? (smsText.slice(0,60)+'…') : smsText;
+
+    const closed = o.closed_at && o.closed_at.trim() !== '' ? o.closed_at : '';
+    const madeHtml   = fmtNice(o.created_at);
+    const closedHtml = closed ? fmtNice(closed) : '<span class="muted">—</span>';
+
+    return `
+      <tr>
+        <td class="mono">#${o.id}</td>
+        <td>${o.service_name || o.service}</td>
+        <td>${o.country_name || o.country}</td>
+        <td class="mono">
+          ${o.number}
+          <div style="margin-top:6px;display:flex;gap:6px;flex-wrap:wrap">
+            <button class="btn btn-ghost" onclick="copyText('${o.number}')">Salin Nomor</button>
+          </div>
+        </td>
+        <td><span class="badge ${badgeCls}">${o.status}</span></td>
+        <td class="sms" onclick="toggleSms('${smsId}')" title="Klik untuk expand/collapse">
+          <div id="${smsId}" data-full="${encodeURIComponent(smsText)}" data-collapsed="1">${smsCollapsed || '-'}</div>
+          ${smsText ? `<div style="margin-top:6px">
+              <button class="btn btn-ghost" onclick="event.stopPropagation(); copyText(decodeURIComponent(document.getElementById('${smsId}').dataset.full))">Salin SMS</button>
+            </div>` : ''}
+        </td>
+        <td>
+          <div><span class="muted">Dibuat:</span> ${madeHtml}</div>
+          <div style="margin-top:6px"><span class="muted">Ditutup:</span> ${closedHtml}</div>
+        </td>
+      </tr>
+    `;
+  }
+
+  function toggleSms(id){
+    const el = document.getElementById(id);
+    if (!el) return;
+    const full = decodeURIComponent(el.dataset.full || '');
+    const isCollapsed = el.dataset.collapsed === '1';
+    if (isCollapsed){
+      el.textContent = full || '-';
+      el.dataset.collapsed = '0';
+    }else{
+      const collapsed = full.length>60 ? (full.slice(0,60)+'…') : full;
+      el.textContent = collapsed || '-';
+      el.dataset.collapsed = '1';
+    }
+  }
+
+  function applyFilters(){
+    const sService = document.getElementById('fService').value.trim().toLowerCase();
+    const sCountry = document.getElementById('fCountry').value.trim().toLowerCase();
+    const sStatus  = document.getElementById('fStatus').value.trim().toUpperCase();
+    const q = document.getElementById('fSearch').value.trim().toLowerCase();
+
+    const tbody = document.getElementById('historyTable');
+    tbody.innerHTML = '';
+
+    const data = [...RAW].sort((a,b)=>{
+      const A = a.updated_at || a.created_at || '';
+      const B = b.updated_at || b.created_at || '';
+      return new Date(B) - new Date(A);
+    });
+
+    data
+      .filter(o => !sService || (o.service_name||'').toLowerCase()===sService)
+      .filter(o => !sCountry || (o.country_name||'').toLowerCase()===sCountry)
+      .filter(o => !sStatus || (o.status||'').toUpperCase()===sStatus)
+      .filter(o => {
+        if (!q) return true;
+        const hay = [
+          o.id, o.number, o.service_name, o.country_name, o.status, o.sms, o.created_at, o.updated_at, o.closed_at
+        ].map(x => String(x||'').toLowerCase()).join(' ');
+        return hay.includes(q);
+      })
+      .forEach(o => { tbody.insertAdjacentHTML('beforeend', renderRow(o)); });
+  }
+
+  async function loadHistory(){
     const res = await fetch('/api/history');
     const j = await res.json();
     if(j.success){
-        const table = document.getElementById('historyTable');
-        table.innerHTML = '';
-        j.orders.forEach(o => {
-            table.innerHTML += `
-                <tr>
-                    <td>#${o.id}</td>
-                    <td>${o.service_name}</td>
-                    <td>${o.country_name}</td>
-                    <td>${o.number}</td>
-                    <td>${o.status}</td>
-
-                    <td class="sms">${o.sms || '-'}</td>
-                    <td>${o.created_at}</td>
-                </tr>
-            `;
-        });
+      RAW = j.orders || [];
+      applyFilters();
     }
-}
-loadHistory();
+  }
+
+  // events
+  document.getElementById('fService').addEventListener('change', applyFilters);
+  document.getElementById('fCountry').addEventListener('change', applyFilters);
+  document.getElementById('fStatus').addEventListener('change', applyFilters);
+  document.getElementById('fSearch').addEventListener('input', applyFilters);
+
+  // init
+  (async ()=>{
+    await fetchCountries();
+    // isi filter
+    const fService = document.getElementById('fService');
+    Object.entries(SERVICES).forEach(([k,v])=>{
+      const opt = document.createElement('option'); opt.value = v; opt.textContent = v; fService.appendChild(opt);
+    });
+    const fCountry = document.getElementById('fCountry');
+    Object.entries(countriesMap).sort((a,b)=>a[1].localeCompare(b[1])).forEach(([id,name])=>{
+      const opt = document.createElement('option'); opt.value = name; opt.textContent = name; fCountry.appendChild(opt);
+    });
+
+    await loadHistory();
+  })();
 </script>
 </body>
 </html>
